@@ -68,6 +68,3 @@ src/
 
 The backend uses a shared `INTERNAL_API_SECRET` for secure communication between the Node.js and FastAPI services. All sensitive callback routes are protected by the `verifyInternalSecret` middleware.
 
-## 📄 License
-
-ISC
