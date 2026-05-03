@@ -1,5 +1,9 @@
 const app = require('./app');
 const config = require('./config/config');
+const connectDB = require('./config/db');
+
+// Connect to Database
+connectDB();
 
 const server = app.listen(config.port, () => {
   console.log(`

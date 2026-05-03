@@ -1,7 +1,6 @@
 const express = require('express');
 const multer = require('multer');
 const aiController = require('../controllers/ai.controller');
-const { verifyInternalSecret } = require('../middlewares/auth.middleware');
 const path = require('path');
 const os = require('os');
 
@@ -29,8 +28,10 @@ const upload = multer({
   },
 });
 
+const { verifyInternalSecret, protect } = require('../middlewares/auth.middleware');
+
 // Route: POST /api/v1/ai/jobs
-router.post('/jobs', upload.single('file'), aiController.createJob);
+router.post('/jobs', protect, upload.single('file'), aiController.createJob);
 
 // Route: POST /api/v1/ai/callback (Called by FastAPI)
 router.post('/callback', verifyInternalSecret, aiController.handleCallback);
