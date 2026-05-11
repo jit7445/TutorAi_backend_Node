@@ -108,7 +108,60 @@ const handleCallback = async (req, res) => {
   }
 };
 
+// --- New Feature Handlers ---
+const summarizeDocument = async (req, res) => {
+  try {
+    const file = req.file;
+    if (!file) return res.status(400).json({ status: 'error', message: 'PDF file is required' });
+
+    const result = await aiService.triggerSummarizeJob(file);
+    if (result.job_id && req.user) {
+      await Job.create({ jobId: result.job_id, user: req.user.id, topic: file.originalname, jobType: 'document_summary', status: 'pending' });
+    }
+    fs.unlink(file.path, () => {});
+    return res.status(201).json({ status: 'success', data: result });
+  } catch (error) {
+    if (req.file) fs.unlink(req.file.path, () => {});
+    return res.status(500).json({ status: 'error', message: error.message });
+  }
+};
+
+const generateTTS = async (req, res) => {
+  try {
+    const { text } = req.body;
+    if (!text) return res.status(400).json({ status: 'error', message: 'Text is required' });
+
+    const result = await aiService.triggerTTSJob(text);
+    if (result.job_id && req.user) {
+      await Job.create({ jobId: result.job_id, user: req.user.id, topic: text.substring(0, 30), jobType: 'tts_narration', status: 'pending' });
+    }
+    return res.status(201).json({ status: 'success', data: result });
+  } catch (error) {
+    return res.status(500).json({ status: 'error', message: error.message });
+  }
+};
+
+const coachPresentation = async (req, res) => {
+  try {
+    const file = req.file; // User's spoken audio
+    if (!file) return res.status(400).json({ status: 'error', message: 'Audio file is required' });
+
+    const result = await aiService.triggerCoachJob(file);
+    if (result.job_id && req.user) {
+      await Job.create({ jobId: result.job_id, user: req.user.id, topic: 'Audio Presentation', jobType: 'presentation_coach', status: 'pending' });
+    }
+    fs.unlink(file.path, () => {});
+    return res.status(201).json({ status: 'success', data: result });
+  } catch (error) {
+    if (req.file) fs.unlink(req.file.path, () => {});
+    return res.status(500).json({ status: 'error', message: error.message });
+  }
+};
+
 module.exports = {
   createJob,
   handleCallback,
+  summarizeDocument,
+  generateTTS,
+  coachPresentation,
 };

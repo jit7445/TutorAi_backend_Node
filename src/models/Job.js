@@ -15,6 +15,11 @@ const jobSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  jobType: {
+    type: String,
+    enum: ['general', 'document_summary', 'tts_narration', 'presentation_coach'],
+    default: 'general'
+  },
   status: {
     type: String,
     enum: ['pending', 'completed', 'failed'],

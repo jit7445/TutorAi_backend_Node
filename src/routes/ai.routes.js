@@ -33,6 +33,11 @@ const { verifyInternalSecret, protect } = require('../middlewares/auth.middlewar
 // Route: POST /api/v1/ai/jobs
 router.post('/jobs', protect, upload.single('file'), aiController.createJob);
 
+// Feature Routes
+router.post('/summarize', protect, upload.single('file'), aiController.summarizeDocument);
+router.post('/tts', protect, aiController.generateTTS);
+router.post('/coach', protect, upload.single('audio'), aiController.coachPresentation);
+
 // Route: POST /api/v1/ai/callback (Called by FastAPI)
 router.post('/callback', verifyInternalSecret, aiController.handleCallback);
 
