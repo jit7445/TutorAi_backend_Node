@@ -6,6 +6,7 @@ const config = {
   aiBackendUrl: process.env.AI_BACKEND_URL || 'http://localhost:8000',
   internalApiSecret: process.env.INTERNAL_API_SECRET || 'fallback_secret',
   mongooseUri: process.env.MONGODB_URI,
+  redisUrl: process.env.REDIS_URL || 'redis://localhost:6379',
   jwtSecret: process.env.JWT_SECRET || 'fallback_jwt_secret',
   jwtExpire: process.env.JWT_EXPIRE || '30d',
 };
